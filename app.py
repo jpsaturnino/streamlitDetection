@@ -1,59 +1,59 @@
 # Python In-built packages
 from pathlib import Path
-import PIL
+from functools import partial
 
 # External packages
 import streamlit as st
+from streamlit_webrtc import WebRtcMode, webrtc_streamer
 
 # Local Modules
 import settings
-import helper
+import helpers
 
 # Setting page layout
 st.set_page_config(
-    page_title="Object Detection using YOLOv8",
+    page_title="PEwOBJ",
     page_icon="🤖",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # Main page heading
-st.title("Object Detection using YOLOv8")
+st.title("PEwOBJ")
 
 # Sidebar
 st.sidebar.header("ML Model Config")
 
 # Model Options
 model_type = st.sidebar.radio(
-    "Select Task", ['Detection', 'Segmentation'])
+    "Select Task", ['Detection', 'Pose Estimation + Detection'])
 
-confidence = float(st.sidebar.slider(
-    "Select Model Confidence", 25, 100, 40)) / 100
+conf_detection = 0
+conf_pose = 0
 
-# Selecting Detection Or Segmentation
+# Selecting model
 if model_type == 'Detection':
     model_path = Path(settings.DETECTION_MODEL)
-elif model_type == 'Segmentation':
-    model_path = Path(settings.SEGMENTATION_MODEL)
+    confidence = float(st.sidebar.slider("Select Model Confidence", 25, 100, 40)) / 100
+elif model_type == 'Pose Estimation + Detection':
+    model_path = Path(settings.POSE_MODEL)
+    conf_detection = float(st.sidebar.slider("Select Detection Confidence", 25, 100, 40)) / 100
+    conf_pose = float(st.sidebar.slider("Select Pose Confidence", 25, 100, 40)) / 100
 
 # Load Pre-trained ML Model
 try:
-    model = helper.load_model(model_path)
+    model = helpers.load_model(model_path)
 except Exception as ex:
     st.error(f"Unable to load model. Check the specified path: {model_path}")
     st.error(ex)
 
-st.sidebar.header("Image/Video Config")
-source_radio = st.sidebar.radio(
-    "Select Source", settings.SOURCES_LIST)
+# Displaying the video feed
+video_frame_callback = partial(helpers.play_webcam, conf = conf_detection, model = model)
 
-source_img = None
-
-if source_radio == settings.WEBCAM:
-    helper.play_webcam(confidence, model)
-
-elif source_radio == settings.RTSP:
-    helper.play_rtsp_stream(confidence, model)
-
-else:
-    st.error("Please select a valid source type!")
+webrtc_ctx = webrtc_streamer(
+    key="object-detection",
+    mode=WebRtcMode.SENDRECV,
+    video_frame_callback=helpers.play_webcam,
+    media_stream_constraints={"video": True, "audio": False},
+    async_processing=True,
+)
