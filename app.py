@@ -9,6 +9,9 @@ from streamlit_webrtc import WebRtcMode, webrtc_streamer
 # Local Modules
 import settings
 import helpers
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Setting page layout
 st.set_page_config(
@@ -30,6 +33,7 @@ model_type = st.sidebar.radio(
 
 conf_detection = 0
 conf_pose = 0
+model_path = ''
 
 # Selecting model
 if model_type == 'Detection':
@@ -43,6 +47,7 @@ elif model_type == 'Pose Estimation + Detection':
 # Load Pre-trained ML Model
 try:
     model = helpers.load_model(model_path)
+    logger.info("Model Loaded Successfully")
 except Exception as ex:
     st.error(f"Unable to load model. Check the specified path: {model_path}")
     st.error(ex)

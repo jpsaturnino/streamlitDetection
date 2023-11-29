@@ -28,7 +28,8 @@ VIDEO_DIR = ROOT / 'videos'
 
 # ML Model config
 MODEL_DIR = ROOT / 'weights'
-DETECTION_MODEL = MODEL_DIR / 'yolov8n.pt'
+MODEL_VERSION = 'v5'
+DETECTION_MODEL = MODEL_DIR / MODEL_VERSION / 's.pt'
 POSE_MODEL = MODEL_DIR / 'yolov8n-pose.pt'
 
 # Webcam

@@ -1,4 +1,3 @@
-from curses import COLOR_BLACK, COLOR_WHITE
 import logging
 
 from ultralytics import YOLO
@@ -36,11 +35,16 @@ def play_webcam(frame: av.VideoFrame):
     """
     # Convert the video frame to an image
     image = frame.to_ndarray(format="bgr24")
-    
-    cv2.rectangle(image, (50, 100), (222, 222), "#FFF", 2)
+
+    # Resize the image to a standard size
+    image = cv2.resize(image, (720, int(720*(9/16))))
+
+    # Predict the objects in the image using the choosen model
+    res = model.predict(image, conf=conf)
+
+    cv2.rectangle(image, (50, 100), (222, 222), (255, 0, 0), 2)
 
     return av.VideoFrame.from_ndarray(image, format="bgr24")
-    # Resize the image to a standard size
     # image = cv2.resize(image, (720, int(720*(9/16))))
 
     # Predict the objects in the image using the YOLOv8 model
