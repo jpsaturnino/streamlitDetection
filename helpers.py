@@ -42,6 +42,9 @@ def play_webcam(frame: av.VideoFrame):
     # Predict the objects in the image using the choosen model
     res = model.predict(image, conf=conf)
 
+    print(res)
+    print(image.shape)
+
     cv2.rectangle(image, (50, 100), (222, 222), (255, 0, 0), 2)
 
     return av.VideoFrame.from_ndarray(image, format="bgr24")

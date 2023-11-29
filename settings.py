@@ -28,7 +28,7 @@ VIDEO_DIR = ROOT / 'videos'
 
 # ML Model config
 MODEL_DIR = ROOT / 'weights'
-MODEL_VERSION = 'v5'
+MODEL_VERSION = 'v8'
 DETECTION_MODEL = MODEL_DIR / MODEL_VERSION / 's.pt'
 POSE_MODEL = MODEL_DIR / 'yolov8n-pose.pt'
 
