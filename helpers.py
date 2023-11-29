@@ -20,7 +20,7 @@ def load_model(model_path):
     model = YOLO(model_path)
     return model
 
-def play_webcam(frame: av.VideoFrame):
+def play_webcam(frame: av.VideoFrame, conf: float, model: YOLO) -> av.VideoFrame:
     """
     Plays a webcam stream. Detects Objects in real-time using the object detection model.
 
@@ -40,22 +40,11 @@ def play_webcam(frame: av.VideoFrame):
     image = cv2.resize(image, (720, int(720*(9/16))))
 
     # Predict the objects in the image using the choosen model
-    res = model.predict(image, conf=conf)
+    results = model.predict(image, conf=conf)
 
-    print(res)
-    print(image.shape)
+    for r in results:
+        im_array = r.plot()
 
-    cv2.rectangle(image, (50, 100), (222, 222), (255, 0, 0), 2)
+    # cv2.rectangle(image, (50, 100), (222, 222), (255, 0, 0), 2)
 
     return av.VideoFrame.from_ndarray(image, format="bgr24")
-    # image = cv2.resize(image, (720, int(720*(9/16))))
-
-    # Predict the objects in the image using the YOLOv8 model
-    # res = model.predict(image, conf=conf)
-    # logger.info("================================== RES ==================================")
-    # logger.info(res)
-
-    # # Plot the detected objects on the video frame
-    # res_plotted = res[0].plot()
-    
-    # return res_plotted

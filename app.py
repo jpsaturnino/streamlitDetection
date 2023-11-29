@@ -53,12 +53,12 @@ except Exception as ex:
     st.error(ex)
 
 # Displaying the video feed
-video_frame_callback = partial(helpers.play_webcam, conf = conf_detection, model = model)
+video_frame_callback = partial(helpers.play_webcam, conf = confidence, model = model)
 
 webrtc_ctx = webrtc_streamer(
     key="object-detection",
     mode=WebRtcMode.SENDRECV,
-    video_frame_callback=helpers.play_webcam,
+    video_frame_callback=video_frame_callback,
     media_stream_constraints={"video": True, "audio": False},
     async_processing=True,
 )
