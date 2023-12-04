@@ -1,5 +1,7 @@
 import logging
 import os
+from requests import get
+from torch import ge
 
 from ultralytics import YOLO
 import av
@@ -80,9 +82,21 @@ def read_database(database_path):
                 bounding_boxes = read_labels(label_path)
                 data.append({'image_path': image_path, 'bounding_boxes': bounding_boxes})
 
-    return data    
+    return data
 
-def start_evaluation():
+def get_pose_estimation_data():
+    pass
+
+def get_hand_regions():
+    pass
+
+def get_object_detection_data():
+    pass
+
+def compare_hand_regions():
+    pass
+
+def start_evaluation(with_pose = False):
     """
     Starts the evaluation process.
 
@@ -96,6 +110,18 @@ def start_evaluation():
         None
     """
 
+    # Load the model
+    try:
+        model = load_model(settings.DETECTION_MODEL)
+        logger.info("Detection Model Loaded Successfully")
+
+        if(with_pose):
+            model_pose = load_model(settings.POSE_MODEL)
+            logger.info("Pose Estimation Model Loaded Successfully")
+    except Exception as ex:
+        logger.error("Unable to load model. Check the specified path")
+        logger.error(ex)
+
     # Read the dataset
     dataset = read_database(settings.DATASET_DIR)
 
@@ -105,4 +131,11 @@ def start_evaluation():
             print(f"Object Class: {obj_class}, Bounding Box: ({x}, {y}, {width}, {height})")
         print("\n")
     
-    
+    if with_pose:
+        get_pose_estimation_data()
+
+    get_hand_regions()
+
+    get_object_detection_data()
+
+    compare_hand_regions()

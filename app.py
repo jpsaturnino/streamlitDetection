@@ -100,4 +100,4 @@ elif operation.lower() == 'avaliação':
     model = st.sidebar.selectbox("Modelo", ["YOLOv5", "YOLOv8"])
     model = st.sidebar.selectbox("Versão", ["nano", "small", "large"])
     
-    st.sidebar.button("Iniciar")
+    st.sidebar.button("Iniciar", on_click=helpers.start_evaluation)
