@@ -8,7 +8,6 @@ from cv2 import log
 # External packages
 import streamlit as st
 from streamlit_webrtc import WebRtcMode, webrtc_streamer
-from sympy import fu
 
 # Local Modules
 import settings

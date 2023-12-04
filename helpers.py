@@ -1,10 +1,10 @@
 import logging
 import numpy as np
+import os
 
 from ultralytics import YOLO
 import av
 import cv2
-import streamlit as st
 
 import settings
 import helpers
@@ -55,3 +55,58 @@ def play_webcam(frame: av.VideoFrame, conf: float, models) -> av.VideoFrame:
 
     # cv2.rectangle(image, (50, 100), (222, 222), (255, 0, 0), 2)
     return av.VideoFrame.from_ndarray(im_array, format="bgr24")
+
+def read_labels(label_path):
+    with open(label_path, 'r') as file:
+        lines = file.readlines()
+    
+    bounding_boxes = []
+    for line in lines:
+        parts = line.strip().split(' ')
+        object_class = int(parts[0])
+        x, y, width, height = map(float, parts[1:])
+        bounding_boxes.append((object_class, x, y, width, height))
+    
+    return bounding_boxes
+
+def read_database(database_path):
+    data = []
+    
+    for file_name in os.listdir(database_path):
+        if file_name.endswith('.jpg') or file_name.endswith('.png'):
+            image_path = os.path.join(database_path, file_name)
+            label_path = os.path.join(database_path, 'labels', f'label{file_name.split(".")[0][3:]}.txt')
+
+            if os.path.exists(label_path):
+                bounding_boxes = read_labels(label_path)
+                data.append({'image_path': image_path, 'bounding_boxes': bounding_boxes})
+
+    return data
+
+def main():
+    dataset = read_database(settings.DATASET_DIR)
+
+    for entry in dataset:
+        print(f"Image Path: {entry['image_path']}")
+        for obj_class, x, y, width, height in entry['bounding_boxes']:
+            print(f"Object Class: {obj_class}, Bounding Box: ({x}, {y}, {width}, {height})")
+        print("\n")
+
+if __name__ == "__main__":
+    main()
+
+
+def start_evaluation():
+    """
+    Starts the evaluation process.
+
+    Parameters:
+        None
+
+    Returns:
+        None
+
+    Raises:
+        None
+    """
+    pass

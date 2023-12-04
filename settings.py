@@ -34,3 +34,6 @@ POSE_MODEL = MODEL_DIR / 'yolov8m-pose.pt'
 
 # Webcam
 WEBCAM_PATH = 0
+
+# DATASET
+DATASET_DIR = ROOT / 'dataset'
