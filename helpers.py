@@ -1,5 +1,4 @@
 import logging
-import numpy as np
 import os
 
 from ultralytics import YOLO
@@ -81,20 +80,7 @@ def read_database(database_path):
                 bounding_boxes = read_labels(label_path)
                 data.append({'image_path': image_path, 'bounding_boxes': bounding_boxes})
 
-    return data
-
-def main():
-    dataset = read_database(settings.DATASET_DIR)
-
-    for entry in dataset:
-        print(f"Image Path: {entry['image_path']}")
-        for obj_class, x, y, width, height in entry['bounding_boxes']:
-            print(f"Object Class: {obj_class}, Bounding Box: ({x}, {y}, {width}, {height})")
-        print("\n")
-
-if __name__ == "__main__":
-    main()
-
+    return data    
 
 def start_evaluation():
     """
@@ -109,4 +95,14 @@ def start_evaluation():
     Raises:
         None
     """
-    pass
+
+    # Read the dataset
+    dataset = read_database(settings.DATASET_DIR)
+
+    for entry in dataset:
+        print(f"Image Path: {entry['image_path']}")
+        for obj_class, x, y, width, height in entry['bounding_boxes']:
+            print(f"Object Class: {obj_class}, Bounding Box: ({x}, {y}, {width}, {height})")
+        print("\n")
+    
+    

@@ -3,7 +3,6 @@ import os
 from pathlib import Path
 from functools import partial
 import zipfile
-from cv2 import log
 
 # External packages
 import streamlit as st
