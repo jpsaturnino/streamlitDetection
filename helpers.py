@@ -1,9 +1,13 @@
 import logging
+import numpy as np
 
 from ultralytics import YOLO
 import av
 import cv2
 import streamlit as st
+
+import settings
+import helpers
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +24,7 @@ def load_model(model_path):
     model = YOLO(model_path)
     return model
 
-def play_webcam(frame: av.VideoFrame, conf: float, model: YOLO) -> av.VideoFrame:
+def play_webcam(frame: av.VideoFrame, conf: float, models) -> av.VideoFrame:
     """
     Plays a webcam stream. Detects Objects in real-time using the object detection model.
 
@@ -37,14 +41,17 @@ def play_webcam(frame: av.VideoFrame, conf: float, model: YOLO) -> av.VideoFrame
     image = frame.to_ndarray(format="bgr24")
 
     # Resize the image to a standard size
-    image = cv2.resize(image, (720, int(720*(9/16))))
+    image = cv2.resize(image, (640, int(640*(9/16))))
 
     # Predict the objects in the image using the choosen model
-    results = model.predict(image, conf=conf)
+    results: YOLO = models["DETECTION"].predict(image, conf=conf)
+
+    results_pose = helpers.load_model(settings.POSE_MODEL).predict(image, conf=conf)
 
     for r in results:
         im_array = r.plot()
+        im_array = results_pose.plot(im_array, boxes=False)
+        
 
     # cv2.rectangle(image, (50, 100), (222, 222), (255, 0, 0), 2)
-
-    return av.VideoFrame.from_ndarray(image, format="bgr24")
+    return av.VideoFrame.from_ndarray(im_array, format="bgr24")

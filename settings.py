@@ -30,7 +30,7 @@ VIDEO_DIR = ROOT / 'videos'
 MODEL_DIR = ROOT / 'weights'
 MODEL_VERSION = 'v8'
 DETECTION_MODEL = MODEL_DIR / MODEL_VERSION / 's.pt'
-POSE_MODEL = MODEL_DIR / 'yolov8n-pose.pt'
+POSE_MODEL = MODEL_DIR / 'yolov8m-pose.pt'
 
 # Webcam
 WEBCAM_PATH = 0
